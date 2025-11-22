@@ -2,8 +2,7 @@
 require_once 'includes/db_connect.php';
 include 'includes/header.php';
 
-// 1. SECURITY: Gatekeeper
-// If the user isn't logged in, kick them to the login page immediately.
+// Verify authentication
 if (!isset($_SESSION['user_id'])) {
     echo "<script>window.location = 'login.php';</script>";
     exit;
@@ -13,22 +12,18 @@ $ad_id = $_GET['id'] ?? null;
 $user_id = $_SESSION['user_id'];
 $msg = "";
 
-// 2. LOGIC: Handling the "Save Changes" Click (POST Request)
-// This block only runs when the user hits the Submit button.
+// Process Update
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $ad_id = $_POST['ad_id']; // Get the ID from the hidden input
+    $ad_id = $_POST['ad_id']; 
     $title = trim($_POST['title']);
     $price = $_POST['price'];
     $details = trim($_POST['details']);
     
-    // 2a. SECURITY: Ownership Check
-    // We check AGAIN to make sure the user actually owns the ad they are trying to update.
-    // This prevents hackers from using tools to force an update on someone else's ad.
+    // Verify ownership before updating
     $check = $pdo->prepare("SELECT user_id FROM ads WHERE ad_id = ? AND user_id = ?");
     $check->execute([$ad_id, $user_id]);
     
     if ($check->rowCount() > 0) {
-        // 2b. The Update
         $sql = "UPDATE ads SET post_title = ?, price = ?, post_detail = ? WHERE ad_id = ?";
         $stmt = $pdo->prepare($sql);
         if ($stmt->execute([$title, $price, $details, $ad_id])) {
@@ -41,25 +36,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// 3. LOGIC: Fetching Data to Pre-fill the Form (GET Request)
-// We need to get the current title/price from the DB to show it in the boxes.
+// Fetch current data
 $stmt = $pdo->prepare("SELECT * FROM ads WHERE ad_id = ? AND user_id = ?");
 $stmt->execute([$ad_id, $user_id]);
 $ad = $stmt->fetch();
 
-// If ad doesn't exist or doesn't belong to user, stop.
 if (!$ad) {
     echo "<div class='container mt-5'><div class='alert alert-danger'>Ad not found or access denied.</div></div>";
     include 'includes/footer.php';
     exit;
 }
 
-// Prepare variables for the HTML below (Sanitize for display)
 $title_val = htmlspecialchars($ad['post_title']);
 $price_val = htmlspecialchars($ad['price']);
 $detail_val = htmlspecialchars($ad['post_detail']);
 
-// 4. VIEW: The HTML Form (Heredoc Syntax)
 echo <<<_END
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -70,9 +61,7 @@ echo <<<_END
                 </div>
                 <div class="card-body">
                     $msg
-                    
                     <form method="POST" action="edit_ad.php?id=$ad_id">
-                        
                         <input type="hidden" name="ad_id" value="$ad_id">
                         
                         <div class="mb-3">

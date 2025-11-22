@@ -8,14 +8,11 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    // 1. Fetch User
     $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
-    // 2. Verify Password
     if ($user && password_verify($password, $user['password_hash'])) {
-        // 3. Set Session State (Slide 29 of Managing State.pdf)
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['username'] = $user['username'];
         

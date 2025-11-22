@@ -1,8 +1,14 @@
 <?php
+/*
+ * CST8238 - Final Project: Classify Marketplace
+ * Group Members: James Lee, Jasneet Bhinder, Mykola Masiian
+ * Description: Main landing page displaying active ad listings.
+ */
+
 require_once 'includes/db_connect.php';
 include 'includes/header.php';
 
-// Search Logic (Optional but good for marks)
+// Handle Search logic
 $search_term = isset($_GET['q']) ? $_GET['q'] : '';
 $sql = "SELECT * FROM ads WHERE is_active = 1";
 $params = [];
@@ -18,22 +24,22 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $ads = $stmt->fetchAll();
 
-// Build Ads HTML using Heredoc loop
+// Generate grid items
 $ads_html = "";
 foreach($ads as $ad) {
     $id = $ad['ad_id'];
     $title = htmlspecialchars($ad['post_title']);
     $price = htmlspecialchars($ad['price']);
-    $desc = htmlspecialchars(substr($ad['post_detail'], 0, 80)) . "..."; // Truncate text
+    $desc = htmlspecialchars(substr($ad['post_detail'], 0, 80)) . "...";
     
-    // Determine Badge (Haves vs Wants)
+    // Badge logic
     if ($ad['listing_type'] == 'WANTED') {
         $badge = "<span class='badge bg-warning text-dark'>WANTED</span>";
     } else {
         $badge = "<span class='badge bg-success'>SELLING</span>";
     }
 
-    // Bootstrap Grid: col-12 for mobile, col-md-6 tablet, col-lg-4 desktop
+    // Construct Card HTML
     $ads_html .= <<<_CARD
     <div class="col-12 col-md-6 col-lg-4 mb-4">
         <div class="card h-100 shadow-sm ad-card-custom">
@@ -56,11 +62,12 @@ if (empty($ads_html)) {
     $ads_html = "<div class='col-12 text-center'><p>No active listings found.</p></div>";
 }
 
+// Page Output
 echo <<<_END
-<div class="bg-primary text-white text-center py-5 mb-5">
+<div class="bg-custom-hero text-white text-center py-5 mb-5">
     <div class="container">
         <h1 class="display-4 fw-bold">Classify Marketplace</h1>
-        <p class="lead">Buy, Sell, Trade</p>
+        <p class="lead">Buy, Sell, and Trade on Campus</p>
         <form class="d-flex justify-content-center mt-4" action="index.php" method="get">
             <input class="form-control w-50 me-2" type="search" name="q" placeholder="Search items..." value="$search_term">
             <button class="btn btn-light text-primary" type="submit">Search</button>

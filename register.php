@@ -1,6 +1,5 @@
 <?php
 require_once 'includes/db_connect.php';
-// Session start is required if we want to auto-login later or handle state messages
 session_start();
 
 $message_html = "";
@@ -10,17 +9,16 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    // 1. Check if user exists
+    // Check for duplicates
     $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ? OR email = ?");
     $stmt->execute([$username, $email]);
 
     if ($stmt->rowCount() > 0) {
         $message_html = "<div class='alert alert-danger'>Username or Email already taken.</div>";
     } else {
-        // 2. Hash Password (Security requirement)
+        // Create account
         $hash = password_hash($password, PASSWORD_DEFAULT);
         
-        // 3. Insert User
         $sql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
         $insert = $pdo->prepare($sql);
         
@@ -32,7 +30,6 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     }
 }
 
-// Output Page
 include 'includes/header.php';
 
 echo <<<_END

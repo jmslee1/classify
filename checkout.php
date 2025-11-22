@@ -2,7 +2,7 @@
 require_once 'includes/db_connect.php';
 include 'includes/header.php';
 
-// Force Login (State Management)
+// Verify authentication
 if (!isset($_SESSION['user_id'])) {
     echo "<script>window.location = 'login.php';</script>";
     exit;
@@ -11,12 +11,12 @@ if (!isset($_SESSION['user_id'])) {
 $id = isset($_GET['id']) ? $_GET['id'] : 0;
 $status_msg = "";
 
-// Handle "Payment"
+// Process Checkout
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $ad_id = $_POST['ad_id'];
     $address = htmlspecialchars($_POST['address']);
     
-    // Mark item as inactive (SOLD)
+    // Set item to sold
     $update = $pdo->prepare("UPDATE ads SET is_active = 0 WHERE ad_id = ?");
     if ($update->execute([$ad_id])) {
         $status_msg = <<<_SUCCESS
@@ -31,10 +31,9 @@ _SUCCESS;
     }
 }
 
-// Show Form if not submitted
 $form_html = "";
 if (empty($status_msg)) {
-    // Fetch item details to show what we are buying
+    // Get item details for summary
     $stmt = $pdo->prepare("SELECT post_title, price FROM ads WHERE ad_id = ?");
     $stmt->execute([$id]);
     $item = $stmt->fetch();

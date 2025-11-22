@@ -19,28 +19,25 @@ if (!$ad) {
     exit;
 }
 
-// Logic Variables
+// Format display data
 $title = htmlspecialchars($ad['post_title']);
 $price = htmlspecialchars($ad['price']);
 $detail = nl2br(htmlspecialchars($ad['post_detail']));
 $seller = htmlspecialchars($ad['username']);
 $date = date("F j, Y", strtotime($ad['create_date']));
 
-// Ownership Check (Session State)
+// Determine user permissions
 $is_owner = (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $ad['user_id']);
 $action_buttons = "";
 
 if ($is_owner) {
-    // Owner sees Edit/Delete
     $action_buttons = <<<_BTNS
     <div class="alert alert-info">This is your listing.</div>
-    <a href="edit_ad.php?id=$id" class="btn btn-warning">Edit Ad</a>
+    <a href="edit_ad.php?id=$id" class="btn btn-warning">Edit Ad</a> 
     <a href="delete_ad.php?id=$id" class="btn btn-danger" onclick="return confirm('Delete this?');">Delete</a>
 _BTNS;
 } else {
-    // Guest/Other User
     if ($ad['listing_type'] == 'OFFER') {
-        // Only show Buy button if it's an Offer (Selling)
         $action_buttons .= "<a href='checkout.php?id=$id' class='btn btn-success btn-lg w-100 mb-2 transition-btn'>Buy Now</a>";
     }
     $action_buttons .= "<a href='mailto:{$ad['email']}' class='btn btn-outline-secondary w-100'>Contact Seller</a>";

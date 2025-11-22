@@ -2,7 +2,7 @@
 require_once 'includes/db_connect.php';
 session_start();
 
-// 1. State Management: Ensure user is logged in (Slide 30)
+// Verify authentication
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -11,21 +11,19 @@ if (!isset($_SESSION['user_id'])) {
 $error_msg = "";
 $success_msg = "";
 
-// 2. Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = trim($_POST['title']);
     $price = $_POST['price'];
     $details = trim($_POST['details']);
     $category = $_POST['category'];
-    $type = $_POST['type']; // OFFER or WANTED
+    $type = $_POST['type'];
     $user_id = $_SESSION['user_id'];
 
-    // Basic Validation
     if (empty($title) || empty($price)) {
         $error_msg = "<div class='alert alert-danger'>Title and Price are required.</div>";
     } else {
         try {
-            // Insert Ad
+            // Insert record
             $sql = "INSERT INTO ads (user_id, category_id, post_title, post_detail, price, listing_type) 
                     VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $pdo->prepare($sql);
@@ -33,14 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             $ad_id = $pdo->lastInsertId();
 
-            // Handle Image Upload
+            // Process file upload
             if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
                 $allowed = ['jpg', 'jpeg', 'png', 'gif'];
                 $filename = $_FILES['image']['name'];
                 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
                 if (in_array($ext, $allowed)) {
-                    // Create unique name
                     $new_name = uniqid() . "." . $ext;
                     $dest = "uploads/" . $new_name;
 
@@ -59,11 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Fetch Categories for dropdown
+// Populate categories
 $cat_stmt = $pdo->query("SELECT * FROM categories");
 $categories = $cat_stmt->fetchAll();
 
-// Build Category Options HTML
 $cat_options = "";
 foreach ($categories as $cat) {
     $cat_options .= "<option value='{$cat['category_id']}'>{$cat['category_name']}</option>";
@@ -80,12 +76,10 @@ echo <<<_END
                     <h4 class="mb-0">Post a New Ad</h4>
                 </div>
                 <div class="card-body">
-                    
                     $error_msg
                     $success_msg
 
                     <form action="post_ad.php" method="POST" enctype="multipart/form-data">
-                        
                         <div class="mb-4 p-3 bg-light border rounded">
                             <label class="form-label fw-bold">What is this listing?</label>
                             <select name="type" class="form-select">

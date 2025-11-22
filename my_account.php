@@ -2,7 +2,6 @@
 require_once 'includes/db_connect.php';
 session_start();
 
-// 1. Security Check
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -11,17 +10,16 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $username = htmlspecialchars($_SESSION['username']);
 
-// 2. Fetch "My Assets" (OFFER)
+// Fetch Assets
 $asset_stmt = $pdo->prepare("SELECT * FROM ads WHERE user_id = ? AND listing_type = 'OFFER' ORDER BY create_date DESC");
 $asset_stmt->execute([$user_id]);
 $my_assets = $asset_stmt->fetchAll();
 
-// 3. Fetch "My Wants" (WANTED)
+// Fetch Wants
 $want_stmt = $pdo->prepare("SELECT * FROM ads WHERE user_id = ? AND listing_type = 'WANTED' ORDER BY create_date DESC");
 $want_stmt->execute([$user_id]);
 $my_wants = $want_stmt->fetchAll();
 
-// Helper function to build list items (Heredoc)
 function buildList($items, $is_asset) {
     $html = "";
     if (count($items) > 0) {
@@ -31,10 +29,8 @@ function buildList($items, $is_asset) {
             $price = htmlspecialchars($item['price']);
             $id = $item['ad_id'];
             
-            // Different buttons for Assets vs Wants
             $extra_btn = "";
             if (!$is_asset) {
-                // If it's a WANT, add a "Find Matches" button
                 $extra_btn = "<a href='index.php?q=$title' class='btn btn-sm btn-primary me-1'>Find Matches</a>";
             }
             
@@ -46,6 +42,7 @@ function buildList($items, $is_asset) {
                 </div>
                 <div>
                     $extra_btn
+                    <a href="edit_ad.php?id=$id" class="btn btn-sm btn-outline-secondary">Edit</a>
                     <a href="delete_ad.php?id=$id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this listing?')">Remove</a>
                 </div>
             </div>
