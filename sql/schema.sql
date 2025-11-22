@@ -1,4 +1,3 @@
--- sql/schema.sql
 DROP DATABASE IF EXISTS classify_db;
 CREATE DATABASE classify_db;
 USE classify_db;
@@ -8,11 +7,11 @@ CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL, -- Added for security
+    password_hash VARCHAR(255) NOT NULL,
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Categories Table (Self-referencing for subcategories)
+-- 2. Categories Table
 CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(50) NOT NULL,
@@ -20,7 +19,7 @@ CREATE TABLE categories (
     FOREIGN KEY (parent_category_id) REFERENCES categories(category_id)
 );
 
--- 3. Ads Table
+-- 3. Ads Table (Updated with listing_type for Haves/Wants)
 CREATE TABLE ads (
     ad_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -28,6 +27,7 @@ CREATE TABLE ads (
     post_title VARCHAR(100) NOT NULL,
     post_detail TEXT,
     price DECIMAL(10, 2) NOT NULL,
+    listing_type ENUM('OFFER', 'WANTED', 'EXCHANGE') DEFAULT 'OFFER', -- NEW COLUMN
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
@@ -42,3 +42,7 @@ CREATE TABLE images (
     is_main_image BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (ad_id) REFERENCES ads(ad_id) ON DELETE CASCADE
 );
+
+-- 5. Pre-fill some Categories (Optional but helpful)
+INSERT INTO categories (category_name) VALUES 
+('Textbooks'), ('Electronics'), ('Furniture'), ('Clothing'), ('Services'), ('Vehicles');
