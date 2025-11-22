@@ -1,0 +1,75 @@
+/* css/style.css */
+
+/* -----------------------------------------------------------
+   ADVANCED CSS IMPLEMENTATION
+   Matches Course PDF Requirements: Transitions, Transforms, Flexbox
+   -----------------------------------------------------------
+*/
+
+/* 1. ADVANCED CSS: Transitions (Slide 22-23)
+   This creates a smooth color change and scale effect on buttons.
+*/
+.transition-btn {
+    /* Define which properties animate */
+    transition-property: background-color, color, transform;
+    /* Define how long it takes (0.3 seconds) */
+    transition-duration: 0.3s;
+    /* Define the speed curve (starts fast, slows down) */
+    transition-timing-function: ease-out;
+}
+
+.transition-btn:hover {
+    /* The End State of the animation */
+    background-color: #0056b3 !important; /* Darker blue */
+    color: white !important;
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* 2. ADVANCED CSS: Transforms (Slide 20)
+   This makes the ad cards "lift" up when you hover over them.
+*/
+.ad-card-custom {
+    /* Smoothly animate the lift and the shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none; /* Remove default Bootstrap border for cleaner look */
+}
+
+.ad-card-custom:hover {
+    /* Move the card UP by 5 pixels */
+    transform: translateY(-5px);
+    /* Add a deeper shadow to create depth */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+}
+
+/* 3. CUSTOM LAYOUT: Flexbox Adjustments
+   Ensures the "View Details" button always sticks to the bottom
+   even if descriptions are different lengths.
+*/
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-text {
+    /* Takes up all available space, pushing the button down */
+    flex-grow: 1; 
+}
+
+/* 4. CUSTOM BRANDING: Navbar Override */
+.navbar-brand {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #ffc107 !important; /* Bootstrap warning yellow */
+}
+
+/* 5. UTILITY: Image Object Fit
+   Ensures images don't stretch weirdly on mobile 
+*/
+.card-img-top {
+    height: 200px;
+    object-fit: cover; /* Crops the image to fit the box */
+}

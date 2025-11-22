@@ -46,3 +46,4 @@ CREATE TABLE images (
 -- 5. Pre-fill some Categories (Optional but helpful)
 INSERT INTO categories (category_name) VALUES 
 ('Textbooks'), ('Electronics'), ('Furniture'), ('Clothing'), ('Services'), ('Vehicles');
+
