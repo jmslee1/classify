@@ -1,7 +1,6 @@
 <?php
 /*
  * CST8238 - Final Project: Classify Marketplace
- * Group Members: James Lee, Jasneet Bhinder, Mykola Masiian
  * Description: Main landing page displaying active ad listings.
  */
 
