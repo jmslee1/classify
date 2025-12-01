@@ -20,6 +20,11 @@ $want_stmt = $pdo->prepare("SELECT * FROM ads WHERE user_id = ? AND listing_type
 $want_stmt->execute([$user_id]);
 $my_wants = $want_stmt->fetchAll();
 
+// Fetch Barter
+$barter_stmt = $pdo->prepare("SELECT * FROM ads WHERE user_id = ? AND listing_type = 'EXCHANGE' ORDER BY create_date DESC");
+$barter_stmt->execute([$user_id]);
+$my_barter = $barter_stmt->fetchAll();
+
 function buildList($items, $is_asset) {
     $html = "";
     if (count($items) > 0) {
@@ -56,7 +61,8 @@ _ITEM;
 }
 
 $assets_html = buildList($my_assets, true);
-$wants_html = buildList($my_wants, false);
+$wants_html = buildList($my_wants, true);
+$barter_html = buildList($my_barter, false);
 
 include 'includes/header.php';
 
@@ -95,6 +101,20 @@ echo <<<_END
                 </div>
             </div>
         </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card border-warning h-100 shadow-sm">
+                <div class="card-header bg-danger text-dark d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">My Barter (Exchange)</h4>
+                    <a href="post_ad.php" class="btn btn-sm btn-dark">+ Add Want</a>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted">Items you are trying to find.</p>
+                    $barter_html
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 _END;
