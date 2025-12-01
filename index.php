@@ -9,12 +9,11 @@ include 'includes/header.php';
 
 // Handle Search logic
 $search_term = isset($_GET['q']) ? $_GET['q'] : '';
-$sql = "SELECT * FROM ads WHERE is_active = 1";
+$sql = "SELECT ads.*, images.image_url FROM ads LEFT JOIN  images ON ads.ad_id = images.ad_id WHERE is_active = 1";
 $params = [];
 
 if ($search_term) {
     $sql .= " AND (post_title LIKE ? OR post_detail LIKE ?)";
-    $params[] = "%$search_term%";
     $params[] = "%$search_term%";
 }
 
@@ -45,6 +44,11 @@ foreach($ads as $ad) {
         $img_src = 'https://via.placeholder.com/300x200';
     }
     
+    if(isset($ad['image_url']))
+        $image = "uploads/".$ad['image_url'];
+    else
+        $image = "uploads/no-image.jpg";
+    
     // Badge logic
     if ($ad['listing_type'] == 'WANTED') {
         $badge = "<span class='badge bg-warning text-dark'>WANTED</span>";
@@ -59,7 +63,11 @@ foreach($ads as $ad) {
             <div class="card-header bg-transparent border-bottom-0 pt-3">
                 $badge
             </div>
+<<<<<<< HEAD
             <img src="$img_src" class="card-img-top" alt="$title">
+=======
+            <img src="$image" class="card-img-top" alt="$title">
+>>>>>>> b927287 (Full image support)
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">$title</h5>
                 <h6 class="text-primary fw-bold">$$price</h6>
