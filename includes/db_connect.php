@@ -7,7 +7,7 @@ $credentials_to_try = [
     ['localhost','3306', 'root', ''],         // 1. Windows XAMPP/Linux
     ['localhost','8889', 'root', 'root'],     // 2. Mac MAMP
     ['localhost','3306', 'root', 'root'],     // 3. Linux/Mac
-    ['127.0.0.1','3306', 'root', '']        // 4. Linux 
+    ['127.0.0.1','3306', 'mikeos', '']        // 4. Linux 
     // add your servers
 ];
 

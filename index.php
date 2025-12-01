@@ -1,6 +1,6 @@
 <?php
 /*
- * CST8238 - Final Project: classify market
+ * CST8238 - Final Project: Classify Marketplace
  * Description: Main landing page displaying active ad listings.
  */
 
@@ -29,20 +29,6 @@ foreach($ads as $ad) {
     $title = htmlspecialchars($ad['post_title']);
     $price = htmlspecialchars($ad['price']);
     $desc = htmlspecialchars(substr($ad['post_detail'], 0, 80)) . "...";
-    // get main image if present
-    $img_stmt = $pdo->prepare("SELECT image_url FROM images WHERE ad_id = ? AND is_main_image = 1 LIMIT 1");
-    $img_stmt->execute([$id]);
-    $img_row = $img_stmt->fetch();
-    if ($img_row) {
-        $possible_path = __DIR__ . '/uploads/' . $img_row['image_url'];
-        if (file_exists($possible_path)) {
-            $img_src = 'uploads/' . $img_row['image_url'];
-        } else {
-            $img_src = 'https://via.placeholder.com/300x200';
-        }
-    } else {
-        $img_src = 'https://via.placeholder.com/300x200';
-    }
     
     if(isset($ad['image_url']))
         $image = "uploads/".$ad['image_url'];
@@ -63,11 +49,7 @@ foreach($ads as $ad) {
             <div class="card-header bg-transparent border-bottom-0 pt-3">
                 $badge
             </div>
-<<<<<<< HEAD
-            <img src="$img_src" class="card-img-top" alt="$title">
-=======
             <img src="$image" class="card-img-top" alt="$title">
->>>>>>> b927287 (Full image support)
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">$title</h5>
                 <h6 class="text-primary fw-bold">$$price</h6>
@@ -87,8 +69,8 @@ if (empty($ads_html)) {
 echo <<<_END
 <div class="bg-custom-hero text-white text-center py-5 mb-5">
     <div class="container">
-        <h1 class="display-4 fw-bold">classify</h1>
-        <p class="lead">buy, sell, trade</p>
+        <h1 class="display-4 fw-bold">Classify Marketplace</h1>
+        <p class="lead">Buy, Sell, and Trade on Campus</p>
         <form class="d-flex justify-content-center mt-4" action="index.php" method="get">
             <input class="form-control w-50 me-2" type="search" name="q" placeholder="Search items..." value="$search_term">
             <button class="btn btn-light text-primary" type="submit">Search</button>
@@ -97,7 +79,7 @@ echo <<<_END
 </div>
 
 <div class="container">
-    <h4 class="mb-4 border-bottom pb-2">latest ads</h4>
+    <h3 class="mb-4 border-bottom pb-2">Latest Listings</h3>
     <div class="row">
         $ads_html
     </div>
