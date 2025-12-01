@@ -1,14 +1,14 @@
 <?php
 /* Database Connection - Auto-Detect */
 
-$host = 'localhost';
 $dbname = 'classify_db';
 
 $credentials_to_try = [
-    ['3306', 'root', ''],         // 1. Windows XAMPP/Linux
-    ['8889', 'root', 'root'],     // 2. Mac MAMP
-    ['3306', 'root', 'root'],     // 3. Linux/Mac
-    ['3306', 'root', 'password']  // 4. Linux
+    ['localhost','3306', 'root', ''],         // 1. Windows XAMPP/Linux
+    ['localhost','8889', 'root', 'root'],     // 2. Mac MAMP
+    ['localhost','3306', 'root', 'root'],     // 3. Linux/Mac
+    ['127.0.0.1','3306', 'root', '']        // 4. Linux 
+    // add your servers
 ];
 
 $pdo = null;
@@ -16,9 +16,10 @@ $errors = [];
 
 foreach ($credentials_to_try as $cred) {
     try {
-        $port = $cred[0];
-        $user = $cred[1];
-        $pass = $cred[2];
+        $host = $cred[0];
+        $port = $cred[1];
+        $user = $cred[2];
+        $pass = $cred[3];
 
         $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
         

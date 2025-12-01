@@ -9,7 +9,7 @@ if (!isset($_GET['id'])) {
 }
 
 $id = $_GET['id'];
-$stmt = $pdo->prepare("SELECT ads.*, users.username, users.email FROM ads JOIN users ON ads.user_id = users.user_id WHERE ad_id = ?");
+$stmt = $pdo->prepare("SELECT ads.*, users.username, users.email, images.image_url FROM ads JOIN users ON ads.user_id = users.user_id LEFT JOIN images ON ads.ad_id = images.ad_id WHERE ads.ad_id = ?");
 $stmt->execute([$id]);
 $ad = $stmt->fetch();
 
@@ -26,6 +26,7 @@ $detail = nl2br(htmlspecialchars($ad['post_detail']));
 $seller = htmlspecialchars($ad['username']);
 $date = date("F j, Y", strtotime($ad['create_date']));
 
+<<<<<<< HEAD
 // Get main image for ad if set
 $img_stmt = $pdo->prepare("SELECT image_url FROM images WHERE ad_id = ? AND is_main_image = 1 LIMIT 1");
 $img_stmt->execute([$id]);
@@ -40,6 +41,12 @@ if ($img_row) {
 } else {
     $img_src = 'https://via.placeholder.com/600x400';
 }
+=======
+if(isset($ad['image_url']))
+    $image = "uploads/".$ad['image_url'];
+else
+    $image = "uploads/no-image.jpg";
+>>>>>>> b927287 (Full image support)
 
 // Determine user permissions
 $is_owner = (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $ad['user_id']);
@@ -62,7 +69,11 @@ echo <<<_END
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 mb-4">
+<<<<<<< HEAD
             <img src="$img_src" class="img-fluid rounded shadow-sm" alt="Product Image">
+=======
+            <img src="$image" class="img-fluid rounded shadow-sm" alt="Product Image">
+>>>>>>> b927287 (Full image support)
         </div>
         <div class="col-md-6">
             <div class="mb-2">
