@@ -61,8 +61,8 @@ _ITEM;
 }
 
 $assets_html = buildList($my_assets, true);
-$wants_html = buildList($my_wants, true);
-$barter_html = buildList($my_barter, false);
+$wants_html = buildList($my_wants, false);
+$barter_html = buildList($my_barter, true);
 
 include 'includes/header.php';
 
