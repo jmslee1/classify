@@ -39,9 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 if (in_array($ext, $allowed)) {
                     $new_name = uniqid() . "." . $ext;
-                    $dest = "uploads/" . $new_name;
+                    $dest = __DIR__ . "/uploads/" . $new_name; // absolute filesystem path
 
                     if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
+                        // store filename only in DB, front-end will use 'uploads/' relative URL
                         $img_sql = "INSERT INTO images (ad_id, image_url, is_main_image) VALUES (?, ?, 1)";
                         $pdo->prepare($img_sql)->execute([$ad_id, $new_name]);
                     }

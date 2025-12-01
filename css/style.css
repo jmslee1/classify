@@ -1,28 +1,33 @@
-/* * Classify Stylesheet
- */
+/* Classify Stylesheet */
 
 /* Button animation styles */
 .transition-btn {
-    transition-property: background-color, color, transform;
+    transition-property: background-color, color, transform, box-shadow;
     transition-duration: 0.3s;
     transition-timing-function: ease-out;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    will-change: transform, box-shadow; /* Added for smoother GPU transitions */
 }
 
 .transition-btn:hover {
     background-color: #0056b3 !important;
     color: white !important;
     transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    filter: brightness(1.05); /* Added subtle brightness for better feedback */
 }
 
 /* Card hover effects */
 .ad-card-custom {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none;
+    will-change: transform, box-shadow; /* Added */
 }
 
 .ad-card-custom:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    filter: brightness(1.03); /* Added slight polish */
 }
 
 /* Card body layout alignment */
@@ -32,28 +37,38 @@
 }
 
 .card-text {
-    flex-grow: 1; 
+    flex-grow: 1;
 }
 
 /* Navbar branding styles */
 .navbar-brand {
     font-size: 1.5rem;
     letter-spacing: 1px;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, text-shadow 0.3s ease; /* Added */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
 .navbar-brand:hover {
-    color: #ffc107 !important;
+    color: #b7b7b7 !important;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.25); /* Added softer glow */
 }
 
 /* Image sizing utility */
 .card-img-top {
     height: 200px;
     object-fit: cover;
+    transition: transform 0.3s ease, filter 0.3s ease; /* Added */
+}
+
+.card-img-top:hover {
+    transform: scale(1.03); /* Added */
+    filter: brightness(1.05); /* Added */
 }
 
 /* Custom Hero Background */
 .bg-custom-hero {
     background-color: #6f42c1 !important;
     background: linear-gradient(45deg, #6f42c1, #d63384) !important;
+    box-shadow: inset 0 -10px 25px rgba(0,0,0,0.2);
+    transition: background 0.4s ease; /* Added for smoothness */
 }

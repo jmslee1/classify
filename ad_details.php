@@ -26,6 +26,21 @@ $detail = nl2br(htmlspecialchars($ad['post_detail']));
 $seller = htmlspecialchars($ad['username']);
 $date = date("F j, Y", strtotime($ad['create_date']));
 
+// Get main image for ad if set
+$img_stmt = $pdo->prepare("SELECT image_url FROM images WHERE ad_id = ? AND is_main_image = 1 LIMIT 1");
+$img_stmt->execute([$id]);
+$img_row = $img_stmt->fetch();
+if ($img_row) {
+    $possible_path = __DIR__ . '/uploads/' . $img_row['image_url'];
+    if (file_exists($possible_path)) {
+        $img_src = 'uploads/' . $img_row['image_url'];
+    } else {
+        $img_src = 'https://via.placeholder.com/600x400';
+    }
+} else {
+    $img_src = 'https://via.placeholder.com/600x400';
+}
+
 // Determine user permissions
 $is_owner = (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $ad['user_id']);
 $action_buttons = "";
@@ -47,7 +62,7 @@ echo <<<_END
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 mb-4">
-            <img src="https://via.placeholder.com/600x400" class="img-fluid rounded shadow-sm" alt="Product Image">
+            <img src="$img_src" class="img-fluid rounded shadow-sm" alt="Product Image">
         </div>
         <div class="col-md-6">
             <div class="mb-2">
